@@ -8,6 +8,7 @@ package university;
  */
 public class University {
 
+	String name;
 	/**
 	 * Constructor
 	 * @param name name of the university
