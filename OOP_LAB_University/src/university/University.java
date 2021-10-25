@@ -8,42 +8,31 @@ package university;
  */
 public class University {
 
-	/**
-	 * Constructor
-	 * @param name name of the university
-	 */
+	String universityName;
+	String rectorName;
+	String rectorSurname;
+	
+	//Constructor
 	public University(String name){
-		//TODO: to be implemented
+		this.universityName  = name;
+		this.rectorName = "";
+		this.rectorSurname = "";
 	}
 	
-	/**
-	 * Getter for the name of the university
-	 * 
-	 * @return name of university
-	 */
+	// Getter for the name of the university
 	public String getName(){
-		//TODO: to be implemented
-		return null;
+		return this.universityName;
 	}
 	
-	/**
-	 * Defines the rector for the university
-	 * 
-	 * @param first
-	 * @param last
-	 */
+	// Defines the rector for the university
 	public void setRector(String first, String last){
-		//TODO: to be implemented
+		this.rectorName = first;
+		this.rectorSurname = last;
 	}
 	
-	/**
-	 * Retrieves the rector of the university
-	 * 
-	 * @return name of the rector
-	 */
+	// Retrieves the rector of the university
 	public String getRector(){
-		//TODO: to be implemented
-		return null;
+		return (this.rectorName + " " + this.rectorSurname);
 	}
 	
 	/**
