@@ -102,24 +102,20 @@ public class University {
 		return (Integer.toString(code) + "," + this.courses[recoverId].getName() + "," + this.courses[recoverId].getRespondibleName());
 	}
 	
-	/**
-	 * Register a student to attend a course
-	 * @param studentID id of the student
-	 * @param courseCode id of the course
-	 */
+	// Register a student to attend a course
 	public void register(int studentID, int courseCode){
-		//TODO: to be implemented
+		
+		studentID = studentID - FIRST_ID_STUDENT;
+		courseCode = courseCode - FIRST_COURSE_CODE;
+		
+		this.courses[courseCode].addParticipant(this.students[studentID]);
 	}
 	
-	/**
-	 * Retrieve a list of attendees
-	 * 
-	 * @param courseCode unique id of the course
-	 * @return list of attendees separated by "\n"
-	 */
+	// Retrieve a list of attendees
 	public String listAttendees(int courseCode){
-		//TODO: to be implemented
-		return null;
+		
+		courseCode = courseCode - FIRST_COURSE_CODE;		
+		return this.courses[courseCode].getParticipantsInformation(); 
 	}
 
 	/**
