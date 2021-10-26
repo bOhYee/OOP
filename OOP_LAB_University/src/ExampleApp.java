@@ -18,7 +18,7 @@ public class ExampleApp {
 		System.out.println("Enrolled students " + s1 + ", " + s2); // 10000, 10001
 		System.out.println("s1 = " + poli.student(s1)); // 10000 Mario Rossi
 		
-		/*int macro = poli.activate("Macro Economics", "Paul Krugman");
+		int macro = poli.activate("Macro Economics", "Paul Krugman");
 		int oop = poli.activate("Object Oriented Programming", "James Gosling");
 		
 		System.out.println("Activated courses " + macro + " and " + oop); // 10 and 11
@@ -30,7 +30,7 @@ public class ExampleApp {
 		// 10000 Mario Rossi
 		// 10001 Giuseppe Verdi
 		
-		System.out.println(poli.studyPlan(s2));*/
+		System.out.println(poli.studyPlan(s2));
 		// 10,Macro Economics,Paul Krugman
 		// 11,Object Oriented Programming,Marco Torchiano
 	}

@@ -9,36 +9,17 @@ package university;
 public class University {
 
 	private final static int FIRST_ID_STUDENT = 10000;
+	private final static int FIRST_COURSE_CODE = 10;
 	private final static int MAX_STUDENTS = 1000;
 	private final static int MAX_COURSES = 50;
-	
-	private class Student{
-		String name;
-		String surname;
 		
-		public Student(String first, String last){
-			
-			this.name = first;
-			this.surname = last;
-			
-		}
-		
-		public String getName() {
-			
-			return this.name;
-		}
-		
-		public String getSurname() {
-					
-			return this.surname;
-		}
-	}
-	
 	private String universityName;
 	private String rectorName;
 	private String rectorSurname;
 	private int enrolledStudents;
+	private int activeCourses;
 	private Student[] students;	
+	private Course[] courses;
 	
 	//Constructor
 	public University(String name){
@@ -47,7 +28,9 @@ public class University {
 		this.rectorName = "";
 		this.rectorSurname = "";
 		this.enrolledStudents = 0;
+		this.activeCourses = 0;
 		this.students = new Student[MAX_STUDENTS];
+		this.courses = new Course[MAX_COURSES];
 		
 	}
 	
@@ -92,36 +75,31 @@ public class University {
 		int recoverId;
 		
 		recoverId = id - FIRST_ID_STUDENT;
-		return (this.students[recoverId].getName() + " " + this.students[recoverId].getSurname());
+		return (Integer.toString(id) + " " + this.students[recoverId].getName() + " " + this.students[recoverId].getSurname());
 	}
 	
-	/**
-	 * Activates a new course with the given teacher
-	 * 
-	 * @param title title of the course
-	 * @param teacher name of the teacher
-	 * 
-	 * @return the unique code assigned to the course
-	 */
+	// Activates a new course with the given teacher
 	public int activate(String title, String teacher){
-		//TODO: to be implemented
-		return -1;
+		
+		int newId;
+		Course newCourse;
+		
+		newId = this.activeCourses;
+		newCourse = new Course(title, teacher);
+		this.courses[newId] = newCourse;
+		this.activeCourses++;
+		
+		newId = newId + FIRST_COURSE_CODE;
+		return newId;
 	}
 	
-	/**
-	 * Retrieve the information for a given course.
-	 * 
-	 * The course information is formatted as a string containing 
-	 * code, title, and teacher separated by commas, 
-	 * e.g., {@code "10,Object Oriented Programming,James Gosling"}.
-	 * 
-	 * @param code unique code of the course
-	 * 
-	 * @return information about the course
-	 */
+	// Retrieve the information for a given course.
 	public String course(int code){
-		//TODO: to be implemented
-		return null;
+		
+		int recoverId;
+		
+		recoverId = code - FIRST_COURSE_CODE;
+		return (Integer.toString(code) + "," + this.courses[recoverId].getName() + "," + this.courses[recoverId].getRespondibleName());
 	}
 	
 	/**
