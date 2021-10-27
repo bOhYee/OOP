@@ -14,7 +14,7 @@ public class Course {
 	private String name;
 	private String responsibleName;
 	private int numAttendees;
-	private Student[] attendees;	
+	private int[] attendees;			// Contains the code of the students participating
 	
 	public Course(int code, String name, String teacher) {
 		
@@ -22,15 +22,23 @@ public class Course {
 		this.name = name;
 		this.responsibleName = teacher;
 		this.numAttendees = 0;
-		this.attendees = new Student[MAX_STUDENTS];
+		this.attendees = new int[MAX_STUDENTS];
 		
 	}
 	
+	// Getter of the course code
+	public int getCode() {
+		
+		return this.code;
+	}
+	
+	// Getter for the course's name
 	public String getName() {
 		
 		return this.name;
 	}
 	
+	// Getter for the course's responsible teacher's name
 	public String getRespondibleName() {
 		
 		return this.responsibleName;
@@ -43,20 +51,24 @@ public class Course {
 		return (this.code + "," + this.name + "," + this.responsibleName);
 	}
 	
-	public void addParticipant(Student participant) {
+	// Method that adds a student to a course
+	public void addParticipant(int studentID) {
 		
-		this.attendees[numAttendees] = participant;
+		this.attendees[numAttendees] = studentID;
 		this.numAttendees++;
 		
 	}
 	
-	public String getParticipantsInformation() {
+	// Method used to verify the attendance to a certain course
+	public Boolean isParticipantRegistered(int studentID) {
 		
-		String info = "";
-				
-		for(int i = 0; i < this.numAttendees; i++) 
-			info += this.attendees[i].toString() + "\n"; 
+		Boolean registered = false;
 		
-		return info;
+		for(int i = 0; (i < this.numAttendees && !registered); i++)
+			if(this.attendees[i] == studentID)
+				registered = true;
+		
+		
+		return registered;
 	}
 }

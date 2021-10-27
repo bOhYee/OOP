@@ -1,6 +1,6 @@
 package university;
 
-/**
+/*
  * This class represents a university education system.
  * 
  * It manages students and courses.
@@ -109,25 +109,40 @@ public class University {
 	// Register a student to attend a course
 	public void register(int studentID, int courseCode){
 		
-		studentID = studentID - FIRST_ID_STUDENT;
-		courseCode = courseCode - FIRST_COURSE_CODE;
+		int posStudent;
+		int posCourse;
 		
-		this.courses[courseCode].addParticipant(this.students[studentID]);
-		this.students[studentID].attendCourse(this.courses[courseCode]);
+		posStudent = studentID - FIRST_ID_STUDENT;
+		posCourse = courseCode - FIRST_COURSE_CODE;		
+		this.courses[posCourse].addParticipant(studentID);
+		this.students[posStudent].attendCourse(courseCode);
 		
 	}
 	
 	// Retrieve a list of attendees
 	public String listAttendees(int courseCode){
 		
-		courseCode = courseCode - FIRST_COURSE_CODE;		
-		return (this.courses[courseCode].getParticipantsInformation()); 
+		String info = "";
+		courseCode = courseCode - FIRST_COURSE_CODE;	
+		for(int i = 0; i < this.enrolledStudents; i++) {
+			if(this.courses[courseCode].isParticipantRegistered(i+FIRST_ID_STUDENT))
+				info += this.students[i].toString() + "\n";
+		}
+		
+		return info;
 	}
 
 	// Retrieves the study plan for a student.
 	public String studyPlan(int studentID){
 		
-		studentID = studentID - FIRST_ID_STUDENT;
-		return (this.students[studentID].showAttendedCourses());		
+		String info = "";
+		
+		studentID = studentID - FIRST_ID_STUDENT;		
+		for(int i = 0; i < this.activeCourses; i++) {
+			if(this.students[studentID].isCourseAttended(i+FIRST_COURSE_CODE))
+				info += this.courses[i].toString() + "\n";
+		}
+		
+		return info;
 	}
 }

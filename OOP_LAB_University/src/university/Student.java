@@ -15,7 +15,7 @@ public class Student {
 	private String surname;
 	
 	private int numAttendedCourses;
-	private Course[] attendedCourses;
+	private int[] attendedCourses;		// Contains the code of the attended courses
 	
 	public Student(int id, String first, String last){		
 		
@@ -23,7 +23,7 @@ public class Student {
 		this.name = first;
 		this.surname = last;	
 		this.numAttendedCourses = 0;
-		this.attendedCourses = new Course[MAX_COURSES];
+		this.attendedCourses = new int[MAX_COURSES];
 		
 	}
 	
@@ -48,21 +48,23 @@ public class Student {
 	
 	
 	// Method used to keep track of which courses every student is registered on 
-	public void attendCourse(Course newAttendedCourse) {
+	public void attendCourse(int courseCode) {
 		
-		this.attendedCourses[numAttendedCourses] = newAttendedCourse;
+		this.attendedCourses[numAttendedCourses] = courseCode;
 		this.numAttendedCourses++;
 		
 	}
 	
-	// Method used to show information about student's attended courses
-	public String showAttendedCourses() {
+	// Method used to verify the attendance to a certain course
+	public Boolean isCourseAttended(int courseCode) {
 		
-		String info = "";
+		Boolean attended = false;
 		
-		for(int i = 0; i < this.numAttendedCourses; i++)
-			info  += this.attendedCourses[i].toString() + "\n";
+		for(int i = 0; (i < this.numAttendedCourses && !attended); i++)
+			if(this.attendedCourses[i] == courseCode)
+				attended = true;
 		
-		return info;
+		
+		return attended;
 	}
 }
