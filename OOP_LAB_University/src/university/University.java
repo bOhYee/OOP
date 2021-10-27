@@ -57,15 +57,17 @@ public class University {
 	// Enroll a student in the university
 	public int enroll(String first, String last){
 		
-		int newId;
+		int position;			// Position of the student in the array
+		int newId;				// Real ID of the student
 		Student newStudent;
 		
-		newId = this.enrolledStudents;	
-		newStudent = new Student(first, last);
-		this.students[newId] = newStudent;
+		position = this.enrolledStudents;	
+		newId = position + FIRST_ID_STUDENT;
+		newStudent = new Student(newId, first, last);
+		
+		this.students[position] = newStudent;
 		this.enrolledStudents++;
 		
-		newId = newId + FIRST_ID_STUDENT;		
 		return newId;
 	}
 	
@@ -75,21 +77,23 @@ public class University {
 		int recoverId;
 		
 		recoverId = id - FIRST_ID_STUDENT;
-		return (Integer.toString(id) + " " + this.students[recoverId].getName() + " " + this.students[recoverId].getSurname());
+		return (this.students[recoverId].toString());
 	}
 	
 	// Activates a new course with the given teacher
 	public int activate(String title, String teacher){
 		
-		int newId;
+		int position;			// Position of the student in the array
+		int newId;				// Real ID of the student
 		Course newCourse;
 		
-		newId = this.activeCourses;
-		newCourse = new Course(title, teacher);
-		this.courses[newId] = newCourse;
+		position = this.activeCourses;
+		newId = position + FIRST_COURSE_CODE;
+		newCourse = new Course(newId, title, teacher);
+		
+		this.courses[position] = newCourse;
 		this.activeCourses++;
 		
-		newId = newId + FIRST_COURSE_CODE;
 		return newId;
 	}
 	
@@ -99,7 +103,7 @@ public class University {
 		int recoverId;
 		
 		recoverId = code - FIRST_COURSE_CODE;
-		return (Integer.toString(code) + "," + this.courses[recoverId].getName() + "," + this.courses[recoverId].getRespondibleName());
+		return (this.courses[recoverId].toString());
 	}
 	
 	// Register a student to attend a course
@@ -109,28 +113,21 @@ public class University {
 		courseCode = courseCode - FIRST_COURSE_CODE;
 		
 		this.courses[courseCode].addParticipant(this.students[studentID]);
+		this.students[studentID].attendCourse(this.courses[courseCode]);
+		
 	}
 	
 	// Retrieve a list of attendees
 	public String listAttendees(int courseCode){
 		
 		courseCode = courseCode - FIRST_COURSE_CODE;		
-		return this.courses[courseCode].getParticipantsInformation(); 
+		return (this.courses[courseCode].getParticipantsInformation()); 
 	}
 
-	/**
-	 * Retrieves the study plan for a student.
-	 * 
-	 * The study plan is reported as a string having
-	 * one course per line (i.e. separated by '\n').
-	 * The courses are formatted as describe in method {@link #course}
-	 * 
-	 * @param studentID id of the student
-	 * 
-	 * @return the list of courses the student is registered for
-	 */
+	// Retrieves the study plan for a student.
 	public String studyPlan(int studentID){
-		//TODO: to be implemented
-		return null;
+		
+		studentID = studentID - FIRST_ID_STUDENT;
+		return (this.students[studentID].showAttendedCourses());		
 	}
 }
