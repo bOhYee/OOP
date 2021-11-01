@@ -1,6 +1,6 @@
 package university;
 
-/*
+/**
  * This class represents a university education system.
  * 
  * It manages students and courses.
@@ -34,6 +34,33 @@ public class University {
 		
 	}
 	
+	// Set of private method for successive usage
+	private Boolean isCourseCodeValid(int toVerifyCourseCode) {
+		
+		Boolean retValue;	// Return value
+		
+		retValue = false;
+		toVerifyCourseCode = toVerifyCourseCode - FIRST_COURSE_CODE;
+		
+		if(toVerifyCourseCode >= 0 && toVerifyCourseCode < this.activeCourses)
+			retValue = true;
+		
+		return retValue;
+	}
+	
+	private Boolean isStudentIdValid(int toVerifyStudentId) {
+		
+		Boolean retValue;	// Return value
+		
+		retValue = false;
+		toVerifyStudentId = toVerifyStudentId - FIRST_ID_STUDENT;
+		
+		if(toVerifyStudentId >= 0 && toVerifyStudentId < this.enrolledStudents)
+			retValue = true;
+		
+		return retValue;
+	}
+	
 	// Getter for the name of the university
 	public String getName(){
 		
@@ -54,95 +81,150 @@ public class University {
 		return (this.rectorName + " " + this.rectorSurname);
 	}
 	
-	// Enroll a student in the university
+	/* 
+	 * Enroll a student in the university
+	*  @return : newId >= FIRST_ID_STUDENT => ok 
+	*  			 newId < 0 => error
+	*  					-1 => there isn't any space available for the student
+	*/
 	public int enroll(String first, String last){
 		
 		int position;			// Position of the student in the array
 		int newId;				// Real ID of the student
 		Student newStudent;
 		
-		position = this.enrolledStudents;	
-		newId = position + FIRST_ID_STUDENT;
-		newStudent = new Student(newId, first, last);
-		
-		this.students[position] = newStudent;
-		this.enrolledStudents++;
+		if(this.enrolledStudents >= MAX_STUDENTS) {
+			// if there isn't anymore space available for the student the method returns an error value (as indicated above)
+			newId = -1;
+		}
+		else {
+			position = this.enrolledStudents;	
+			newId = position + FIRST_ID_STUDENT;
+			newStudent = new Student(newId, first, last);
+			
+			this.students[position] = newStudent;
+			this.enrolledStudents++;
+		}		
 		
 		return newId;
 	}
 	
-	// Retrieves the information for a given student
+	/* 
+	*  Retrieves the information for a given student
+	*  @return : String <> "" => ok 
+	*  			 String == "" => there isn't any student with that id => error
+	*/
 	public String student(int id){
 		
 		int recoverId;
+		String retValue = ""; // Return value
 		
-		recoverId = id - FIRST_ID_STUDENT;
-		return (this.students[recoverId].toString());
+		if(isStudentIdValid(id)) {
+			recoverId = id - FIRST_ID_STUDENT;			
+			retValue = this.students[recoverId].toString();
+		}
+		
+		return retValue;
 	}
 	
-	// Activates a new course with the given teacher
+	/* 
+	 * Activates a new course with the given teacher
+	*  @return : newId >= FIRST_COURSE_CODE => ok 
+	*  			 newId < 0 => error
+	*  					-1 => there isn't any space available for a new course
+	*/
 	public int activate(String title, String teacher){
 		
 		int position;			// Position of the student in the array
 		int newId;				// Real ID of the student
 		Course newCourse;
 		
-		position = this.activeCourses;
-		newId = position + FIRST_COURSE_CODE;
-		newCourse = new Course(newId, title, teacher);
-		
-		this.courses[position] = newCourse;
-		this.activeCourses++;
+		if(this.activeCourses >= MAX_COURSES) {
+			// if there isn't anymore space available for a new course the method returns an error value (as indicated above)
+			newId = -1;
+		}
+		else {
+			position = this.activeCourses;
+			newId = position + FIRST_COURSE_CODE;
+			newCourse = new Course(newId, title, teacher);
+			
+			this.courses[position] = newCourse;
+			this.activeCourses++;
+		}	
 		
 		return newId;
 	}
 	
-	// Retrieve the information for a given course.
+	/* 
+	*  Retrieve the information for a given course.
+	*  @return : String <> "" => ok 
+	*  			 String == "" => there isn't any course with that code => error
+	*/
 	public String course(int code){
 		
 		int recoverId;
+		String retValue = ""; // Return value
 		
-		recoverId = code - FIRST_COURSE_CODE;
-		return (this.courses[recoverId].toString());
+		if(isCourseCodeValid(code)) {
+			recoverId = code - FIRST_COURSE_CODE;
+			retValue = this.courses[recoverId].toString();
+		}
+		
+		return retValue;
 	}
 	
 	// Register a student to attend a course
 	public void register(int studentID, int courseCode){
 		
-		int posStudent;
-		int posCourse;
-		
-		posStudent = studentID - FIRST_ID_STUDENT;
-		posCourse = courseCode - FIRST_COURSE_CODE;		
-		this.courses[posCourse].addParticipant(studentID);
-		this.students[posStudent].attendCourse(courseCode);
+		if(isStudentIdValid(studentID) && isCourseCodeValid(courseCode)) {
+			studentID = studentID - FIRST_ID_STUDENT;
+			courseCode = courseCode - FIRST_COURSE_CODE;
+			
+			if(this.students[studentID].canAttendCourse() && this.courses[courseCode].canGetParticipant()) {
+				this.courses[courseCode].addParticipant(this.students[studentID]);
+				this.students[studentID].attendCourse(this.courses[courseCode]);
+			}
+			else {
+				System.out.println("Impossible to register the student to the selected course.");
+			}						
+		}
+		else {
+			System.out.println("StudentId or Course code are not valid!\n Please check them.");
+		}
 		
 	}
 	
-	// Retrieve a list of attendees
+	/* 
+	*  Retrieve a list of attendees
+	*  @return : String <> "" => ok 
+	*  			 String == "" => there isn't any course with that code => error
+	*/
 	public String listAttendees(int courseCode){
 		
-		String info = "";
-		courseCode = courseCode - FIRST_COURSE_CODE;	
-		for(int i = 0; i < this.enrolledStudents; i++) {
-			if(this.courses[courseCode].isParticipantRegistered(i+FIRST_ID_STUDENT))
-				info += this.students[i].toString() + "\n";
+		String retValue = "";
+		
+		if(isCourseCodeValid(courseCode)) {
+			courseCode = courseCode - FIRST_COURSE_CODE;		
+			retValue = this.courses[courseCode].getParticipantsInformation();
 		}
 		
-		return info;
+		return retValue;
 	}
 
-	// Retrieves the study plan for a student.
+	/* 
+	*  Retrieves the study plan for a student
+	*  @return : String <> "" => ok 
+	*  			 String == "" => there isn't any student with that id => error
+	*/
 	public String studyPlan(int studentID){
 		
-		String info = "";
+		String retValue = "";
 		
-		studentID = studentID - FIRST_ID_STUDENT;		
-		for(int i = 0; i < this.activeCourses; i++) {
-			if(this.students[studentID].isCourseAttended(i+FIRST_COURSE_CODE))
-				info += this.courses[i].toString() + "\n";
+		if(isStudentIdValid(studentID)) {
+			studentID = studentID - FIRST_ID_STUDENT;
+			retValue = this.students[studentID].showAttendedCourses();
 		}
 		
-		return info;
+		return retValue;
 	}
 }

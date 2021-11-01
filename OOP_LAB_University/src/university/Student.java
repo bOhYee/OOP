@@ -15,7 +15,7 @@ public class Student {
 	private String surname;
 	
 	private int numAttendedCourses;
-	private int[] attendedCourses;		// Contains the code of the attended courses
+	private Course[] attendedCourses;
 	
 	public Student(int id, String first, String last){		
 		
@@ -23,7 +23,7 @@ public class Student {
 		this.name = first;
 		this.surname = last;	
 		this.numAttendedCourses = 0;
-		this.attendedCourses = new int[MAX_COURSES];
+		this.attendedCourses = new Course[MAX_COURSES];
 		
 	}
 	
@@ -33,7 +33,7 @@ public class Student {
 		return this.name;
 	}
 
-	// Getter for the surnname of the student
+	// Getter for the surname of the student
 	public String getSurname() {
 				
 		return this.surname;
@@ -46,25 +46,34 @@ public class Student {
 		return (this.id + " " + this.name + " " + this.surname);
 	}
 	
-	
-	// Method used to keep track of which courses every student is registered on 
-	public void attendCourse(int courseCode) {
+	// Method used to verify if the student attends more than MAX_COURSES 
+	public Boolean canAttendCourse() {
 		
-		this.attendedCourses[numAttendedCourses] = courseCode;
-		this.numAttendedCourses++;
+		Boolean retValue = true;
 		
+		if(this.numAttendedCourses >= MAX_COURSES) {
+			retValue = false;
+		}
+		
+		return retValue;
 	}
 	
-	// Method used to verify the attendance to a certain course
-	public Boolean isCourseAttended(int courseCode) {
+	// Method used to keep track of which courses every student is registered on 
+	public void attendCourse(Course newAttendedCourse) {
 		
-		Boolean attended = false;
+		this.attendedCourses[numAttendedCourses] = newAttendedCourse;
+		this.numAttendedCourses++;
+	
+	}
+	
+	// Method used to show information about student's attended courses
+	public String showAttendedCourses() {
 		
-		for(int i = 0; (i < this.numAttendedCourses && !attended); i++)
-			if(this.attendedCourses[i] == courseCode)
-				attended = true;
+		String info = "";
 		
+		for(int i = 0; i < this.numAttendedCourses; i++)
+			info  += this.attendedCourses[i].toString() + "\n";
 		
-		return attended;
+		return info;
 	}
 }
