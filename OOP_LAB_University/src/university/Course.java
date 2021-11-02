@@ -26,6 +26,11 @@ public class Course {
 		
 	}
 	
+	public int getCode() {
+		
+		return this.code;
+	}
+	
 	public String getName() {
 		
 		return this.name;
@@ -73,4 +78,27 @@ public class Course {
 		
 		return info;
 	}
+	
+	// It returns the average grade from all the exam
+	public float getAvgGrade() {
+		
+		float retValue = 0;
+		int singleAvg;
+		int numStudents = 0;
+		
+		for(int i = 0; i < this.numAttendees; i++) {
+			singleAvg = this.attendees[i].getGrade(this.code);
+			if(singleAvg != -1) {
+				numStudents++;
+				retValue += singleAvg;
+			}
+		}
+		
+		if(numStudents > 0)
+			retValue = (float) (retValue/numStudents);
+		else 
+			retValue = -1;
+		
+		return retValue;		
+	}	
 }

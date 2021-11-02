@@ -2,10 +2,8 @@ package university;
 
 import java.util.logging.Logger;
 
-/**
+/*
  * This class is an extended version of the {@Link University} class.
- * 
- *
  */
 public class UniversityExt extends University {
 	
@@ -17,14 +15,17 @@ public class UniversityExt extends University {
 		logger.info("Creating extended university object");
 	}
 
-	/**
-	 * records the grade (integer 0-30) for an exam can 
-	 * 
-	 * @param studentId the ID of the student
-	 * @param courseID	course code 
-	 * @param grade		grade ( 0-30)
-	 */
+	// Records the grade (integer 0-30) for an exam
 	public void exam(int studentId, int courseID, int grade) {
+		
+		if(isCourseCodeValid(courseID) && isStudentIdValid(studentId) && (grade >= 0 && grade <= 30)) {			
+			studentId = studentId - FIRST_ID_STUDENT;
+			if(!(this.students[studentId].registerGrade(courseID, grade)))
+				System.out.println("Student " + Integer.toString(studentId + FIRST_ID_STUDENT) + " isn't registered to course " + Integer.toString(courseID));
+		}
+		else {
+			System.out.println("One of the arguments is invalid!");
+		}
 		
 	}
 
@@ -36,12 +37,26 @@ public class UniversityExt extends University {
 	 * 
 	 * If the student has no exam recorded the method
 	 * returns {@code "Student STUDENT_ID hasn't taken any exams"}.
-	 * 
-	 * @param studentId the ID of the student
-	 * @return the average grade formatted as a string.
 	 */
 	public String studentAvg(int studentId) {
-		return null;
+		
+		float avgGrade;
+		String retValue = "";
+		
+		if(isStudentIdValid(studentId)) {
+			studentId = studentId - FIRST_ID_STUDENT;
+			avgGrade = this.students[studentId].getAvgGrade();
+			
+			if(avgGrade != -1)
+				retValue = "Student " + Integer.toString(studentId) + " : " + Float.toString(avgGrade);
+			else
+				retValue = "Student " + Integer.toString(studentId) + " hasn't taken any exams";
+		}
+		else {
+			retValue = "Student " + Integer.toString(studentId) + " doesn't exist"; 
+		}
+		
+		return retValue;
 	}
 	
 	/**
@@ -52,11 +67,26 @@ public class UniversityExt extends University {
 	 * 
 	 * If no student took the exam for that course it returns {@code "No student has taken the exam in COURSE_TITLE"}.
 	 * 
-	 * @param courseId	course code 
-	 * @return the course average formatted as a string
 	 */
 	public String courseAvg(int courseId) {
-		return null;
+		
+		float avgGrade;
+		String retValue = "";
+		
+		if(isCourseCodeValid(courseId)) {
+			courseId = courseId - FIRST_COURSE_CODE;
+			avgGrade = this.courses[courseId].getAvgGrade();
+			
+			if(avgGrade != -1)
+				retValue = "The average for the course " + this.courses[courseId].getName() + " is: " + Float.toString(avgGrade);
+			else
+				retValue = "No student has taken the exam in " + this.courses[courseId].getName();
+		}
+		else {
+			retValue = "Course " + Integer.toString(courseId) + " doesn't exist"; 
+		}
+		
+		return retValue;
 	}
 	
 	/**

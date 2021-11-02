@@ -8,8 +8,8 @@ package university;
  */
 public class University {
 
-	private final static int FIRST_ID_STUDENT = 10000;
-	private final static int FIRST_COURSE_CODE = 10;
+	protected final static int FIRST_ID_STUDENT = 10000;
+	protected final static int FIRST_COURSE_CODE = 10;
 	private final static int MAX_STUDENTS = 1000;
 	private final static int MAX_COURSES = 50;
 		
@@ -18,8 +18,8 @@ public class University {
 	private String rectorSurname;
 	private int enrolledStudents;
 	private int activeCourses;
-	private Student[] students;	
-	private Course[] courses;
+	protected Student[] students;	
+	protected Course[] courses;
 	
 	//Constructor
 	public University(String name){
@@ -35,7 +35,7 @@ public class University {
 	}
 	
 	// Set of private method for successive usage
-	private Boolean isCourseCodeValid(int toVerifyCourseCode) {
+	protected Boolean isCourseCodeValid(int toVerifyCourseCode) {
 		
 		Boolean retValue;	// Return value
 		
@@ -48,7 +48,7 @@ public class University {
 		return retValue;
 	}
 	
-	private Boolean isStudentIdValid(int toVerifyStudentId) {
+	protected Boolean isStudentIdValid(int toVerifyStudentId) {
 		
 		Boolean retValue;	// Return value
 		
