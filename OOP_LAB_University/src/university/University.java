@@ -108,6 +108,12 @@ public class University {
 		
 		return newId;
 	}
+		
+	// Getter for the number of enrolled students in a university
+	public int getNumOfEnrolledStudents() {
+		
+		return this.enrolledStudents;
+	}
 	
 	/* 
 	*  Retrieves the information for a given student

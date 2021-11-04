@@ -8,7 +8,39 @@ import java.util.logging.Logger;
 public class UniversityExt extends University {
 	
 	private final static Logger logger = Logger.getLogger("University");
+	
+	/*
+	 * Used to obtain the score of a student
+	 * Formula used to calculate it is in the R6 request:
+	 * "The students' score is evaluated as the average grade of the exams they've taken. 
+	 * To take into account the number of exams taken and not only the grades, special bonus is assigned on top of the average grade: 
+	 * the number of taken exams divided by the number of courses the student is enrolled to, multiplied by 10 is added."
+	 *  
+	 */
+	private float getScoreOfStudent(Student tmpStudent) {
+		
+		float score;
+		float bonus;
+		
+		bonus = (float)(tmpStudent.getNumOfExamsTaken()/tmpStudent.getNumOfCoursesAttended());
+		bonus *= 10;		
+		score = tmpStudent.getAvgGrade() + bonus;
+		
+		return score;
+	}
 
+	/*
+	 * Used to verify the presence of a student in the topThree array
+	 */
+	private Boolean isInTopThree(Student tmpStudent, Student[] topThree, int i) {
+		
+		for(int j = 0; j < i; j++)
+			if(tmpStudent == topThree[j])
+				return true;
+		
+		return false;
+	}
+	
 	public UniversityExt(String name) {
 		super(name);
 		// Example of logging
@@ -105,6 +137,43 @@ public class UniversityExt extends University {
 	 * @return info of the best three students.
 	 */
 	public String topThreeStudents() {
-		return null;
+		
+		float compareScore;
+		float tmpScore;
+		String retValue = "";
+		
+		/*
+		 * Used considering in position 0 the best student
+		 * It contains the top three students's references, not the score
+		 * 
+		 */
+		Student[] topThree = new Student[3];		
+		
+		for(int i = 0; (i < 3 && i < this.getNumOfEnrolledStudents()); i++) {
+			for(Student tmpStudent : this.students) {
+				if(tmpStudent == null)
+					break;
+				
+				if(topThree[i] == null) {
+					topThree[i] = tmpStudent;
+				}
+				else if(topThree[i] != null && !isInTopThree(tmpStudent, topThree, i)){
+					tmpScore = getScoreOfStudent(tmpStudent);
+					compareScore = getScoreOfStudent(topThree[i]);
+					if(tmpScore > compareScore)
+						topThree[i] = tmpStudent;
+				}
+			}
+			
+		}		
+		
+		for(Student tmpStudent : topThree) {
+			if(tmpStudent == null)
+				break;
+						
+			retValue += tmpStudent.getName() + " " + tmpStudent.getSurname() + " : " + Float.toString(getScoreOfStudent(tmpStudent)) + "\n";
+		}
+		
+		return retValue;
 	}
 }

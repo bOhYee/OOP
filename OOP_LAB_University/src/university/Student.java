@@ -14,12 +14,13 @@ public class Student {
 	private String name;
 	private String surname;
 	
+
 	/* 
 	 * Between the Course and Int array there is a 1:1 relationship
 	 * In other words, for the x-th attended course it is associated the x-th grade in the grades array
 	 */
 	private int numAttendedCourses;
-	private Course[] attendedCourses;
+	private Course[] attendedCourses;	
 	private int[] grades;
 	
 	public Student(int id, String first, String last){		
@@ -81,6 +82,12 @@ public class Student {
 	
 	}
 	
+	// Used to retrieve the number of courses attended by the student
+	public int getNumOfCoursesAttended() {
+		
+		return this.numAttendedCourses;
+	}
+	
 	// Method used to show information about student's attended courses
 	public String showAttendedCourses() {
 		
@@ -105,6 +112,20 @@ public class Student {
 		}
 		
 		return setGrade;
+	}
+	
+	// Used to get the number of exams taken
+	public int getNumOfExamsTaken() {
+		
+		int counter;
+		
+		counter = 0;
+		for(int i = 0; i < this.numAttendedCourses; i++) {
+			if(this.grades[i] != -1)
+				counter++;
+		}
+		
+		return counter;
 	}
 	
 	// It returns the grade for a specific exam
