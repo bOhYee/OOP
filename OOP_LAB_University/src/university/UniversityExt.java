@@ -50,10 +50,16 @@ public class UniversityExt extends University {
 	// Records the grade (integer 0-30) for an exam
 	public void exam(int studentId, int courseID, int grade) {
 		
+		StringBuffer logMessage = new StringBuffer();
+		logMessage.append("Student ").append(studentId).append(" took an exam in course ").append(courseID).append(" with grade ").append(grade);
+		
 		if(isCourseCodeValid(courseID) && isStudentIdValid(studentId) && (grade >= 0 && grade <= 30)) {			
 			studentId = studentId - FIRST_ID_STUDENT;
 			if(!(this.students[studentId].registerGrade(courseID, grade)))
 				System.out.println("Student " + Integer.toString(studentId + FIRST_ID_STUDENT) + " isn't registered to course " + Integer.toString(courseID));
+			else
+				logger.info(logMessage.toString());
+			
 		}
 		else {
 			System.out.println("One of the arguments is invalid!");
@@ -176,4 +182,55 @@ public class UniversityExt extends University {
 		
 		return retValue;
 	}
+
+	// Overridden methods for logging information about operations done by operators
+	@Override
+	public int enroll(String first, String last) {
+		
+		int newId;
+		StringBuffer logMessage = new StringBuffer("New student enrolled: ");
+		
+		newId = super.enroll(first, last);
+		if(newId > 0) {
+			logMessage.append(newId).append(", ").append(first).append(' ').append(last);
+			logger.info(logMessage.toString());
+		}
+		
+		return newId;
+	}
+	
+	@Override
+	public int activate(String title, String teacher) {
+		
+		int newCourseCode;
+		StringBuffer logMessage = new StringBuffer("New course activated: ");
+		
+		newCourseCode = super.activate(title, teacher);
+		if(newCourseCode > 0) {
+			logMessage.append(newCourseCode).append(", ").append(title).append(' ').append(teacher);
+			logger.info(logMessage.toString());
+		}
+		
+		return newCourseCode;
+	}
+	
+
+	/*
+	 * In my implementation this method can actually print on the console errors related to 
+	 * the validity of the arguments or related to the capacity of study plan and course attendees not respected...
+	 * In this case the log is incorrect, but at the same time i cannot pass a return value from the super.register method
+	 * so... i'll leave it like this and discuss with the teacher if my approach is correct or not
+	 */
+	@Override
+	public void register(int studentID, int courseCode) {
+		
+		StringBuffer logMessage = new StringBuffer();
+		
+		super.register(studentID, courseCode);
+		logMessage.append("Student ").append(studentID).append(" signed up for course ").append(courseCode);
+		logger.info(logMessage.toString());
+		
+		
+	}
+
 }
