@@ -9,30 +9,43 @@ package hydraulic;
  */
 public abstract class Element {
 	
+	private String name;
+	private Element downstreamComponent;
+	
 	/**
 	 * Constructor
 	 * @param name the name of the element
 	 */
 	public Element(String name){
-		// TODO: to be implemented
+		this.name = name;
+		this.downstreamComponent = null;
 	}
 
-	/**
-	 * getter method
+	/*
+	 * Getter method
 	 * @return the name of the element
 	 */
 	public String getName(){
-		// TODO: to be implemented
-		return null;
+		
+		return this.name;
 	}
 	
 	/**
 	 * Connects this element to a given element.
 	 * The given element will be connected downstream of this element
+	 * If the object on which it is called the method is 'Sink', then the connection must not take effect
+	 * 
 	 * @param elem the element that will be placed downstream
 	 */
 	public void connect(Element elem){
-		// TODO: to be implemented
+		
+		if(this.downstreamComponent != null) {
+			System.out.println("This " + this.getName() + " has already a connection with another element of type: " + this.downstreamComponent.getName());
+		}
+		else {
+			if(!(this instanceof Sink))
+				this.downstreamComponent = elem;
+		}
 	}
 	
 	/**
@@ -40,8 +53,8 @@ public abstract class Element {
 	 * @return downstream element
 	 */
 	public Element getOutput(){
-		// TODO: to be implemented
-		return null;
+		
+		return this.downstreamComponent;
 	}
 	
 }

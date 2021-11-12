@@ -9,32 +9,49 @@ package hydraulic;
 
 public class Split extends Element {
 
+	private final static int MAX_CONNECTIONS_T = 2;
+	
+	private Element[] downstreamConnections; 
+	
 	/**
-	 * Constructor
+	 * Constructor of the complex element 'Split'
 	 * @param name
 	 */
 	public Split(String name) {
 		super(name);
-		//TODO: complete
+		this.downstreamConnections = new Element[MAX_CONNECTIONS_T];
 	}
     
 	/**
-	 * returns the downstream elements
+	 * Returns the downstream elements
 	 * @return array containing the two downstream element
 	 */
     public Element[] getOutputs(){
-    		//TODO: complete
-        return null;
+    	
+    	return this.downstreamConnections.clone();
+    }
+    
+    /*
+     * Override of the connect method to disable it for the class Split since it operates in a different manner.
+     */
+    @Override
+    public void connect(Element elem) {
+    	System.out.println("Error: the Split element does not permit the call of this method without a second parameter.");
     }
 
     /**
-     * connect one of the outputs of this split to a
-     * downstream component.
+     * Connect one of the outputs of this split to a downstream component.
      * 
      * @param elem  the element to be connected downstream
      * @param noutput the output number to be used to connect the element
      */
 	public void connect(Element elem, int noutput){
-		//TODO: complete
+		
+		if((noutput == 0 || noutput == 1) && (this.downstreamConnections[noutput] == null)) {
+			this.downstreamConnections[noutput] = elem;
+		}
+		else {
+			System.out.println("It's impossible to connect these two elements. Check if a connection has already been made.");
+		}
 	}
 }

@@ -8,18 +8,24 @@ package hydraulic;
  */
 public class Source extends Element {
 
+	/*
+	 *  The velocity at which the fluid moves within the elements.
+	 *  It's unit of measurement is (m^3)/hour
+	 */	
+	private double velocityOfFluid;
+	
 	public Source(String name) {
 		super(name);
-		//TODO: complete
+		velocityOfFluid = 0;
 	}
 
 	/**
-	 * defines the flow produced by the source
+	 * Defines the flow produced by the source
 	 * 
 	 * @param flow
 	 */
 	public void setFlow(double flow){
-		//TODO: complete
+		this.velocityOfFluid = flow;
 	}
 	
 }

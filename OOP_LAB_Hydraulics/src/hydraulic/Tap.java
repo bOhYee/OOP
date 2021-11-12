@@ -9,9 +9,14 @@ package hydraulic;
 
 public class Tap extends Element {
 
+	/*
+	 * Value used to check if the Tap is open
+	 */
+	Boolean isTapOpen;
+	
 	public Tap(String name) {
 		super(name);
-		//TODO: complete
+		isTapOpen = false;
 	}
 	
 	/**
@@ -19,8 +24,8 @@ public class Tap extends Element {
 	 * 
 	 * @param open  opening level
 	 */
-	public void setOpen(boolean open){
-		//TODO: complete
+	public void setOpen(Boolean open){
+		this.isTapOpen = open;		
 	}
 
 }
