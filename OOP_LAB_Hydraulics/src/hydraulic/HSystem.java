@@ -52,7 +52,40 @@ public class HSystem {
 	 * Starts the simulation of the system
 	 */
 	public void simulate(SimulationObserver observer){
-		// TODO: to be implemented
+		
+		for(int i = 0; i < this.numberOfElements; i++) {
+		
+			// If it finds a Source then the simulation begins
+			if(this.components[i] instanceof Source)
+				this.simulateFlow(this.components[i], SimulationObserver.NO_FLOW, observer);
+		}
+	}
+	
+	/**
+	 * Recursive method to simulate the flow
+	 */
+	private void simulateFlow(Element component, double inputFlow, SimulationObserver observer) {
+		
+		double outputFlow = 0;
+		Element downstreamComponent;
+		Element[] downstreamComponents;		
+		
+		if(component == null)
+			return;
+		
+		outputFlow = component.computeFlow(inputFlow);
+		observer.notifyFlow(component.getClass().getSimpleName(), component.getName(), inputFlow, outputFlow);
+		
+		if(component instanceof Split) {
+			downstreamComponents = ((Split) component).getOutputs();
+			for(int i = 0; i < Split.MAX_CONNECTIONS_T; i++)
+				simulateFlow(downstreamComponents[i], outputFlow, observer);
+		}
+		else {
+			downstreamComponent = component.getOutput();
+			simulateFlow(downstreamComponent, outputFlow, observer);
+		}			
+		
 	}
 
 }

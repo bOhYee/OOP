@@ -6,13 +6,17 @@ package hydraulic;
  */
 public class Sink extends Element {
 
-	/**
-	 * Constructor
-	 * @param name
-	 */
 	public Sink(String name) {
 		super(name);
-		//TODO: complete
+	}
+	
+	/**
+	 * Method overridden to compute the flow for a Sink element
+	 */
+	@Override
+	public double computeFlow(double inputFlow) {
+			
+		return SimulationObserver.NO_FLOW;
 	}
 	
 }

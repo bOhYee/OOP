@@ -57,4 +57,8 @@ public abstract class Element {
 		return this.downstreamComponent;
 	}
 	
+	/**
+	 * Method that has to be overridden by subclasses in order to give the right output flow of an element
+	 */
+	public abstract double computeFlow(double inputFlow);
 }

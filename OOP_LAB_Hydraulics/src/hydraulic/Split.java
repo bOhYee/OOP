@@ -9,7 +9,7 @@ package hydraulic;
 
 public class Split extends Element {
 
-	private final static int MAX_CONNECTIONS_T = 2;
+	public final static int MAX_CONNECTIONS_T = 2;
 	
 	private Element[] downstreamConnections; 
 	
@@ -53,5 +53,16 @@ public class Split extends Element {
 		else {
 			System.out.println("It's impossible to connect these two elements. Check if a connection has already been made.");
 		}
+	}
+	
+	/**
+	 * Method overridden to compute the flow for a Split element
+	 * The return value is a single 'double' only because the outputFlow value is the same whether or not there is
+	 * an element connected 
+	 */
+	@Override
+	public double computeFlow(double inputFlow) {
+		
+		return (inputFlow/2);
 	}
 }

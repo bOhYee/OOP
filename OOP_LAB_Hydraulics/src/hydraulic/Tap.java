@@ -12,7 +12,7 @@ public class Tap extends Element {
 	/*
 	 * Value used to check if the Tap is open
 	 */
-	Boolean isTapOpen;
+	private Boolean isTapOpen;
 	
 	public Tap(String name) {
 		super(name);
@@ -26,6 +26,32 @@ public class Tap extends Element {
 	 */
 	public void setOpen(Boolean open){
 		this.isTapOpen = open;		
+	}
+	
+	/*
+	 * Getter to verify if the tap is open
+	 */
+	public Boolean isTapOpen() {
+		
+		return this.isTapOpen;
+	}
+	
+	/**
+	 * Method overridden to compute the flow for a Tap element
+	 */
+	@Override
+	public double computeFlow(double inputFlow) {
+		
+		double retValue;
+		
+		if(this.isTapOpen()) {
+			retValue = inputFlow;
+		}
+		else {
+			retValue = SimulationObserver.NO_FLOW;
+		}
+		
+		return retValue;
 	}
 
 }

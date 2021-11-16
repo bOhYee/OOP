@@ -16,7 +16,7 @@ public class Source extends Element {
 	
 	public Source(String name) {
 		super(name);
-		velocityOfFluid = 0;
+		this.velocityOfFluid = 0;
 	}
 
 	/**
@@ -28,4 +28,20 @@ public class Source extends Element {
 		this.velocityOfFluid = flow;
 	}
 	
+	/**
+	 * Getter of the flow 
+	 */
+	public double getFlow() {
+		
+		return this.velocityOfFluid;
+	}
+	
+	/**
+	 * For a Source element the computeFlow method must return the flow entered before through the interface method 'setFlow'
+	 */
+	@Override 
+	public double computeFlow(double inputFlow) {
+		
+		return this.getFlow();
+	}
 }

@@ -10,6 +10,7 @@ package hydraulic;
  *
  */
 public interface SimulationObserver {
+	
 	/**
 	 * Constant used to mark a flow as missing,
 	 * (e.g. for the classes {@link Source} and {@link Sink})
