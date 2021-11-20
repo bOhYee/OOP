@@ -9,8 +9,8 @@ public class HSystem {
 	
 	private final static int MAX_COMPONENTS = 100;
 	
-	private int numberOfElements;
-	private Element[] components;	
+	protected int numberOfElements;
+	protected Element[] components;	
 	
 	/*
 	 * Constructor of the Hydraulic System
@@ -76,9 +76,9 @@ public class HSystem {
 		outputFlow = component.computeFlow(inputFlow);
 		observer.notifyFlow(component.getClass().getSimpleName(), component.getName(), inputFlow, outputFlow);
 		
-		if(component instanceof Split) {
-			downstreamComponents = ((Split) component).getOutputs();
-			for(int i = 0; i < Split.MAX_CONNECTIONS_T; i++)
+		if(component instanceof Multisplit) {
+			downstreamComponents = ((Multisplit) component).getOutputs();
+			for(int i = 0; i < ((Multisplit) component).usedConnections; i++)
 				simulateFlow(downstreamComponents[i], outputFlow, observer);
 		}
 		else {
