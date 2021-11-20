@@ -49,6 +49,14 @@ public abstract class Element {
 	}
 	
 	/**
+	 * Disconnects the element from the previous downstream element connected
+	 */
+	public void disconnect() {
+		
+		this.downstreamComponent = null;
+	}
+	
+	/**
 	 * Retrieves the element connected downstream of this
 	 * @return downstream element
 	 */

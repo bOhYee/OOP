@@ -28,6 +28,13 @@ public class Multisplit extends Element {
 	}
 	
 	/**
+	 * @return the usedConnections
+	 */
+	public int getUsedConnections() {
+		return usedConnections;
+	}
+	
+	/**
 	 * @return the totalConnections
 	 */
 	public int getTotalConnections() {
@@ -72,6 +79,16 @@ public class Multisplit extends Element {
     	else {
     		System.out.println("It's impossible to connect these two elements. Check if a connection has already been made.");
     	}
+	}
+	
+	/**
+	 * Disconnects the element from the previous downstream element connected
+	 */
+	public void disconnect(int noutput) {
+	
+		if(noutput >= MIN_INDEX_CONNECTION && noutput < this.totalConnections) {
+			this.downstreamConnections[noutput] = null;
+		}
 	}
 	
 	/**

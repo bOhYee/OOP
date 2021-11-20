@@ -66,24 +66,31 @@ public class HSystem {
 	 */
 	private void simulateFlow(Element component, double inputFlow, SimulationObserver observer) {
 		
-		double outputFlow = 0;
+		double[] outputFlow;
 		Element downstreamComponent;
 		Element[] downstreamComponents;		
 		
 		if(component == null)
 			return;
 		
-		outputFlow = component.computeFlow(inputFlow);
+		if(component.getClass().getSimpleName().equals("Multisplit")) {
+			outputFlow = ((Multisplit) component).computeFlows(inputFlow);
+		}
+		else{
+			outputFlow = new double[1];
+			outputFlow[0] = component.computeFlow(inputFlow);
+		}
+		
 		observer.notifyFlow(component.getClass().getSimpleName(), component.getName(), inputFlow, outputFlow);
 		
 		if(component instanceof Multisplit) {
 			downstreamComponents = ((Multisplit) component).getOutputs();
 			for(int i = 0; i < ((Multisplit) component).usedConnections; i++)
-				simulateFlow(downstreamComponents[i], outputFlow, observer);
+				simulateFlow(downstreamComponents[i], outputFlow[i], observer);
 		}
 		else {
 			downstreamComponent = component.getOutput();
-			simulateFlow(downstreamComponent, outputFlow, observer);
+			simulateFlow(downstreamComponent, outputFlow[0], observer);
 		}			
 		
 	}
