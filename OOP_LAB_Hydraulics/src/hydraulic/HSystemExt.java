@@ -82,11 +82,65 @@ public class HSystemExt extends HSystem{
 	}
 
 	/**
-	 * starts the simulation of the system; if enableMaxFlowCheck is true,
+	 * Starts the simulation of the system; if enableMaxFlowCheck is true,
 	 * checks also the elements maximum flows against the input flow
 	 */
 	public void simulate(SimulationObserverExt observer, boolean enableMaxFlowCheck) {
-		// TODO: to be implemented
+		
+		for(int i = 0; i < this.numberOfElements; i++) {
+			
+			// If it finds a Source then the simulation begins
+			if(this.components[i] instanceof Source)
+				simulateFlowExt(this.components[i], SimulationObserverExt.NO_FLOW, observer, enableMaxFlowCheck);
+		}
+	}
+	
+	/**
+	 * An extension of the simulateFlow method
+	 * It has the same effect as the first version but here it checks if the input flow rate
+	 * of an element is greater than the max flow rate expected
+	 * 
+	 * @param component: Source element which start the simulation 
+	 * @param inputFlow: initial value of the flow rate
+	 * @param observer: object used to print the notification
+	 * @param enableMaxFlowCheck: Boolean that indicates if the checks for the max flow rate has to be done
+	 */
+	private void simulateFlowExt(Element component, double inputFlow, SimulationObserverExt observer, Boolean enableMaxFlowCheck) {
+			
+		double maxFlow;
+		double[] outputFlow;
+		Element downstreamComponent;
+		Element[] downstreamComponents;		
+		
+		if(component == null)
+			return;
+		
+		if((enableMaxFlowCheck) && (component instanceof ElementExt)) {
+			maxFlow = ((ElementExt) component).getMaxFlow();
+			if(maxFlow > 0 && inputFlow > maxFlow)
+				observer.notifyFlowError(component.getClass().getSimpleName(), component.getName(), inputFlow, maxFlow);
+		}
+		
+		if(component.getClass().getSimpleName().equals("Multisplit")) {
+			outputFlow = ((Multisplit) component).computeFlows(inputFlow);
+		}
+		else{
+			outputFlow = new double[1];
+			outputFlow[0] = component.computeFlow(inputFlow);
+		}
+		
+		observer.notifyFlow(component.getClass().getSimpleName(), component.getName(), inputFlow, outputFlow);
+		
+		if(component instanceof Multisplit) {
+			downstreamComponents = ((Multisplit) component).getOutputs();
+			for(int i = 0; i < ((Multisplit) component).usedConnections; i++)
+				simulateFlowExt(downstreamComponents[i], outputFlow[i], observer, enableMaxFlowCheck);
+		}
+		else {
+			downstreamComponent = component.getOutput();
+			simulateFlowExt(downstreamComponent, outputFlow[0], observer, enableMaxFlowCheck);
+		}			
+	
 	}
 	
 }

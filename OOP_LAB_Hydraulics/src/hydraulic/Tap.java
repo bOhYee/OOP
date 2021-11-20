@@ -7,7 +7,7 @@ package hydraulic;
  * {@link #setOpen(boolean) setOpen()}.
  */
 
-public class Tap extends Element {
+public class Tap extends ElementExt {
 
 	/*
 	 * Value used to check if the Tap is open

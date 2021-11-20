@@ -6,7 +6,7 @@ package hydraulic;
  * The status of the source is defined through the method
  * {@link #setFlow(double) setFlow()}.
  */
-public class Source extends Element {
+public class Source extends ElementExt {
 
 	/*
 	 *  The velocity at which the fluid moves within the elements.

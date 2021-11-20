@@ -6,7 +6,7 @@ package hydraulic;
  * During the simulation each downstream element will
  * receive a stream that is determined by the proportions.
  */
-public class Multisplit extends Element {
+public class Multisplit extends ElementExt {
 
 	private final static int MIN_INDEX_CONNECTION = 0;
 	private int totalConnections;

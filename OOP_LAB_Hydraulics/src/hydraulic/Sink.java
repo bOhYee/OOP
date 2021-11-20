@@ -4,7 +4,7 @@ package hydraulic;
  * Represents the sink, i.e. the terminal element of a system
  *
  */
-public class Sink extends Element {
+public class Sink extends ElementExt {
 
 	public Sink(String name) {
 		super(name);
