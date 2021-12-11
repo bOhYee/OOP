@@ -20,14 +20,20 @@ import java.util.Optional;
  */
 public class Region {
 
+	private final static String NO_RANGE = "0-INF";
+	
+	private String name;
+	private String[] altitudeRanges;
+	
+	
 	/**
 	 * Create a region with the given name.
 	 * 
-	 * @param name
-	 *            the name of the region
+	 * @param name: the name of the region
 	 */
 	public Region(String name) {
-
+		this.name = name;
+		this.altitudeRanges = null;
 	}
 
 	/**
@@ -36,30 +42,48 @@ public class Region {
 	 * @return the name of the region
 	 */
 	public String getName() {
-		return null;
+		return this.name;
 	}
 
 	/**
 	 * Create the ranges given their textual representation in the format
 	 * "[minValue]-[maxValue]".
 	 * 
-	 * @param ranges
-	 *            an array of textual ranges
+	 * @param ranges: an array of textual ranges
 	 */
 	public void setAltitudeRanges(String... ranges) {
-
+		this.altitudeRanges = ranges;
 	}
 
 	/**
 	 * Return the textual representation in the format "[minValue]-[maxValue]" of
 	 * the range including the given altitude or return the default range "0-INF".
 	 * 
-	 * @param altitude
-	 *            the geographical altitude
+	 * @param altitude: the geographical altitude
 	 * @return a string representing the range
 	 */
 	public String getAltitudeRange(Integer altitude) {
-		return null;
+		
+		int minValue;
+		int maxValue;
+		String retValue = null;
+		String[] range;
+		
+		for(String tmp : this.altitudeRanges){
+			// I know the format of the string and therefore i know the number of value (of type String) are contained inside range[]
+			range = tmp.split("-");
+			minValue = Integer.parseInt(range[0]); 
+			maxValue = Integer.parseInt(range[1]);
+			
+			if(altitude >= minValue && altitude <= maxValue)
+				retValue = tmp;
+			
+		}
+		
+		if(retValue == null)
+			retValue = NO_RANGE;
+		
+		return retValue;
 	}
 
 	/**
