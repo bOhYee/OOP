@@ -21,9 +21,13 @@ import java.util.Optional;
 public class Region {
 
 	private final static String NO_RANGE = "0-INF";
+	private final static int MAX_MUNICIPALITIES = 100;
 	
 	private String name;
 	private String[] altitudeRanges;
+	
+	private Municipality[] municipalities;
+	private int numOfMunicipalities;
 	
 	
 	/**
@@ -34,6 +38,8 @@ public class Region {
 	public Region(String name) {
 		this.name = name;
 		this.altitudeRanges = null;
+		this.numOfMunicipalities = 0;
+		this.municipalities = new Municipality[MAX_MUNICIPALITIES];
 	}
 
 	/**
@@ -99,7 +105,18 @@ public class Region {
 	 * @return the municipality
 	 */
 	public Municipality createOrGetMunicipality(String name, String province, Integer altitude) {
-		return null;
+		
+		Municipality retValue;
+		
+		for(Municipality tmp : this.municipalities) {
+			if(tmp.getName().equals(name))
+				return tmp;
+		}
+		
+		retValue = new Municipality(name, province, altitude);
+		this.municipalities[this.numOfMunicipalities++] = retValue;
+		
+		return retValue;
 	}
 
 	/**
@@ -125,8 +142,7 @@ public class Region {
 	 *            the municipality in which the mountain hut is located
 	 * @return the mountain hut
 	 */
-	public MountainHut createOrGetMountainHut(String name, String category, Integer bedsNumber,
-			Municipality municipality) {
+	public MountainHut createOrGetMountainHut(String name, String category, Integer bedsNumber, Municipality municipality) {
 		return null;
 	}
 
@@ -146,8 +162,7 @@ public class Region {
 	 *            the municipality in which the mountain hut is located
 	 * @return a mountain hut
 	 */
-	public MountainHut createOrGetMountainHut(String name, Integer altitude, String category, Integer bedsNumber,
-			Municipality municipality) {
+	public MountainHut createOrGetMountainHut(String name, Integer altitude, String category, Integer bedsNumber, Municipality municipality) {
 		return null;
 	}
 

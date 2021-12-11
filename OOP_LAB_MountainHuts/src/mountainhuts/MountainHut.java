@@ -10,12 +10,27 @@ import java.util.Optional;
  */
 public class MountainHut {
 
+	private String name;
+	private String category;
+	private Integer numOfBeds;
+	private Municipality location;
+	
+	/*
+	 * Constructor of the MountainHut class
+	 */
+	public MountainHut(String name, String category, Integer numOfBeds, Municipality location) {
+		this.name = name;
+		this.category = category;
+		this.numOfBeds = numOfBeds;
+		this.location = location;
+	}
+	
 	/**
 	 * Unique name of the mountain hut
 	 * @return name
 	 */
 	public String getName() {
-		return null;
+		return this.name;
 	}
 
 	/**
@@ -34,7 +49,7 @@ public class MountainHut {
 	 * @return the category
 	 */
 	public String getCategory() {
-		return null;
+		return this.category;
 	}
 
 	/**
@@ -42,7 +57,7 @@ public class MountainHut {
 	 * @return number of beds
 	 */
 	public Integer getBedsNumber() {
-		return null;
+		return this.numOfBeds;
 	}
 
 	/**
@@ -51,7 +66,7 @@ public class MountainHut {
 	 * @return municipality
 	 */
 	public Municipality getMunicipality() {
-		return null;
+		return this.location;
 	}
 
 }
