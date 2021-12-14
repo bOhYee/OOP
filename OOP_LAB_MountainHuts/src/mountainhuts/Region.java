@@ -7,8 +7,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Class {@code Region} represents the main facade
@@ -21,14 +26,12 @@ import java.util.Optional;
 public class Region {
 
 	private final static String NO_RANGE = "0-INF";
-	private final static int MAX_MUNICIPALITIES = 100;
 	
 	private String name;
 	private String[] altitudeRanges;
 	
-	private Municipality[] municipalities;
-	private int numOfMunicipalities;
-	
+	private LinkedList<Municipality> municipalities;
+	private LinkedList<MountainHut> huts;	
 	
 	/**
 	 * Create a region with the given name.
@@ -38,8 +41,8 @@ public class Region {
 	public Region(String name) {
 		this.name = name;
 		this.altitudeRanges = null;
-		this.numOfMunicipalities = 0;
-		this.municipalities = new Municipality[MAX_MUNICIPALITIES];
+		this.huts = new LinkedList<>();
+		this.municipalities = new LinkedList<>();
 	}
 
 	/**
@@ -51,6 +54,7 @@ public class Region {
 		return this.name;
 	}
 
+	
 	/**
 	 * Create the ranges given their textual representation in the format
 	 * "[minValue]-[maxValue]".
@@ -60,7 +64,7 @@ public class Region {
 	public void setAltitudeRanges(String... ranges) {
 		this.altitudeRanges = ranges;
 	}
-
+	
 	/**
 	 * Return the textual representation in the format "[minValue]-[maxValue]" of
 	 * the range including the given altitude or return the default range "0-INF".
@@ -72,8 +76,12 @@ public class Region {
 		
 		int minValue;
 		int maxValue;
-		String retValue = null;
+		String retValue = NO_RANGE;
 		String[] range;
+		
+		// If ranges haven't been set up it will return null
+		if(this.altitudeRanges == null)
+			return retValue;
 		
 		for(String tmp : this.altitudeRanges){
 			// I know the format of the string and therefore i know the number of value (of type String) are contained inside range[]
@@ -86,35 +94,32 @@ public class Region {
 			
 		}
 		
-		if(retValue == null)
-			retValue = NO_RANGE;
-		
 		return retValue;
 	}
+	
 
 	/**
 	 * Create a new municipality if it is not already available or find it.
 	 * Duplicates must be detected by comparing the municipality names.
 	 * 
-	 * @param name
-	 *            the municipality name
-	 * @param province
-	 *            the municipality province
-	 * @param altitude
-	 *            the municipality altitude
+	 * @param name: the municipality name
+	 * @param province: the municipality province
+	 * @param altitude: the municipality altitude
 	 * @return the municipality
 	 */
 	public Municipality createOrGetMunicipality(String name, String province, Integer altitude) {
 		
 		Municipality retValue;
+		Iterator<Municipality> i = this.municipalities.iterator();
 		
-		for(Municipality tmp : this.municipalities) {
-			if(tmp.getName().equals(name))
-				return tmp;
+		for(; i.hasNext(); ) {			
+			retValue = i.next();
+			if(retValue.getName().equals(name))
+				return retValue;
 		}
 		
 		retValue = new Municipality(name, province, altitude);
-		this.municipalities[this.numOfMunicipalities++] = retValue;
+		this.municipalities.add(retValue);
 		
 		return retValue;
 	}
@@ -125,45 +130,52 @@ public class Region {
 	 * @return a collection of municipalities
 	 */
 	public Collection<Municipality> getMunicipalities() {
-		return null;
+		
+		return this.municipalities;
 	}
 
 	/**
 	 * Create a new mountain hut if it is not already available or find it.
 	 * Duplicates must be detected by comparing the mountain hut names.
 	 *
-	 * @param name
-	 *            the mountain hut name
-	 * @param category
-	 *            the mountain hut category
-	 * @param bedsNumber
-	 *            the number of beds in the mountain hut
-	 * @param municipality
-	 *            the municipality in which the mountain hut is located
+	 * @param name: the mountain hut name
+	 * @param category: the mountain hut category
+	 * @param bedsNumber: the number of beds in the mountain hut
+	 * @param municipality: the municipality in which the mountain hut is located
 	 * @return the mountain hut
 	 */
 	public MountainHut createOrGetMountainHut(String name, String category, Integer bedsNumber, Municipality municipality) {
-		return null;
+		
+		return createOrGetMountainHut(name, null, category, bedsNumber, municipality);
 	}
 
 	/**
 	 * Create a new mountain hut if it is not already available or find it.
 	 * Duplicates must be detected by comparing the mountain hut names.
 	 * 
-	 * @param name
-	 *            the mountain hut name
-	 * @param altitude
-	 *            the mountain hut altitude
-	 * @param category
-	 *            the mountain hut category
-	 * @param bedsNumber
-	 *            the number of beds in the mountain hut
-	 * @param municipality
-	 *            the municipality in which the mountain hut is located
+	 * @param name: the mountain hut name
+	 * @param altitude: the mountain hut altitude
+	 * @param category: the mountain hut category
+	 * @param bedsNumber: the number of beds in the mountain hut
+	 * @param municipality: the municipality in which the mountain hut is located
 	 * @return a mountain hut
 	 */
 	public MountainHut createOrGetMountainHut(String name, Integer altitude, String category, Integer bedsNumber, Municipality municipality) {
-		return null;
+		
+		MountainHut retValue;
+		Iterator<MountainHut> i = this.huts.iterator();
+		Optional<Integer> alt = Optional.ofNullable(altitude);
+		
+		for(; i.hasNext(); ) {
+			retValue = i.next();
+			if(retValue.getName().equals(name))
+				return retValue;
+		}
+				
+		retValue = new MountainHut(name, category, bedsNumber, alt, municipality);
+		this.huts.add(retValue);
+				
+		return retValue;
 	}
 
 	/**
@@ -172,7 +184,7 @@ public class Region {
 	 * @return a collection of mountain huts
 	 */
 	public Collection<MountainHut> getMountainHuts() {
-		return null;
+		return this.huts;
 	}
 
 	/**
@@ -192,13 +204,43 @@ public class Region {
 	 * The fields are separated by a semicolon (';'). The field {@code "Altitude"}
 	 * may be empty.
 	 * 
-	 * @param name
-	 *            the name of the region
-	 * @param file
-	 *            the path of the file
+	 * @param name: the name of the region
+	 * @param file: the path of the file
 	 */
 	public static Region fromFile(String name, String file) {
-		return null;
+		
+		Region newRegion;
+		List<String> lines = readData(file);
+		
+		if(lines == null) {
+			newRegion = null;
+		}
+		else {
+			newRegion = new Region(name);
+			
+			lines.stream().skip(1).forEach(new Consumer<String>() {
+				public void accept(String line) {
+					String[] fields = line.split(";");
+					Integer altitude;
+					
+					// Create the Municipality
+					Municipality tmp = newRegion.createOrGetMunicipality(fields[1], fields[0], Integer.valueOf(fields[2]));
+					
+					// Check if the altitude is empty
+					if(fields[4].isBlank()) {
+						altitude = null;
+					}
+					else {
+						altitude = Integer.valueOf(fields[4]);
+					}
+					
+					// Create the MountainHut
+					newRegion.createOrGetMountainHut(fields[3], altitude, fields[5], Integer.valueOf(fields[6]), tmp);
+				}
+			});
+		}
+		
+		return newRegion;
 	}
 
 	/**

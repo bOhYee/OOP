@@ -13,16 +13,19 @@ public class MountainHut {
 	private String name;
 	private String category;
 	private Integer numOfBeds;
+	private Optional<Integer> altitude;
 	private Municipality location;
+	
 	
 	/*
 	 * Constructor of the MountainHut class
 	 */
-	public MountainHut(String name, String category, Integer numOfBeds, Municipality location) {
+	public MountainHut(String name, String category, Integer numOfBeds, Optional<Integer> altitude, Municipality location) {
 		this.name = name;
 		this.category = category;
 		this.numOfBeds = numOfBeds;
 		this.location = location;
+		this.altitude = altitude;
 	}
 	
 	/**
@@ -40,7 +43,7 @@ public class MountainHut {
 	 * @return optional containing the altitude
 	 */
 	public Optional<Integer> getAltitude() {
-		return null;
+		return this.altitude;
 	}
 
 	/**
