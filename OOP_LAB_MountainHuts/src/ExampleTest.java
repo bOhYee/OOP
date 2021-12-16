@@ -33,15 +33,16 @@ public class ExampleTest {
 		Map<String, Long> res1 = r.countMunicipalitiesPerProvince();
 		assertNotNull("Missing count of municipalities per province", res1);
 		assertEquals("Wrong number of municipalities in province of Torino", Long.valueOf(24), res1.get("TORINO"));
-//
-//		Map<String, Map<String, Long>> res2 = r.countMountainHutsPerMunicipalityPerProvince();
-//		assertNotNull("Missing count of mountain huts per municipality per province", res2);
-//		Map<String, Long> resTo = res2.get("TORINO");
-//		assertNotNull("Missing count of mountain huts in province of Torino", resTo);
-//
-//		Map<String, Long> res3 = r.countMountainHutsPerAltitudeRange();
-//		assertNotNull("Missing count of mountain huts per altitude range", res3);
-//		assertEquals("Wrong number of mountain huts in altitude range 0-1000", Long.valueOf(22), res3.get("0-1000"));
+
+		Map<String, Map<String, Long>> res2 = r.countMountainHutsPerMunicipalityPerProvince();
+		System.out.println(res2);
+		assertNotNull("Missing count of mountain huts per municipality per province", res2);
+		Map<String, Long> resTo = res2.get("TORINO");
+		assertNotNull("Missing count of mountain huts in province of Torino", resTo);
+
+		Map<String, Long> res3 = r.countMountainHutsPerAltitudeRange();
+		assertNotNull("Missing count of mountain huts per altitude range", res3);
+		assertEquals("Wrong number of mountain huts in altitude range 0-1000", Long.valueOf(22), res3.get("0-1000"));
 //
 //		Map<String, Integer> res4 = r.totalBedsNumberPerProvince();
 //		assertNotNull("Missing total beds number per province", res4);

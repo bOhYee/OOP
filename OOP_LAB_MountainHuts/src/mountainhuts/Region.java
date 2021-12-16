@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Iterator;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -272,7 +273,23 @@ public class Region {
 	 *         value
 	 */
 	public Map<String, Long> countMunicipalitiesPerProvince() {
-		return null;
+		
+		Map<String, Long> retValue = new HashMap<>(this.municipalities.size()/2);
+		
+		this.municipalities.stream().map(Municipality::getProvince).forEach(new Consumer<String>(){
+			public void accept(String province) {
+				
+				Long numInProvince = Long.valueOf(0);
+				
+				if(retValue.containsKey(province))
+					numInProvince = retValue.get(province);	
+				
+				numInProvince = numInProvince + 1;
+				retValue.put(province, numInProvince);
+			}
+		});;
+		
+		return retValue;
 	}
 
 	/**
@@ -282,7 +299,31 @@ public class Region {
 	 *         municipality as key and the number of mountain huts as value
 	 */
 	public Map<String, Map<String, Long>> countMountainHutsPerMunicipalityPerProvince() {
-		return null;
+		
+		Map<String, Map<String, Long>> retValue = new HashMap<>(this.municipalities.size()/2);
+		Map<String, Long> insideMap = new HashMap<>((this.huts.size())/2);
+		
+		this.municipalities.stream().map(Municipality::getProvince).distinct().forEach(new Consumer<String>() {
+			public void accept(String province) {
+				
+				huts.stream().filter(h -> h.getMunicipality().getProvince().equals(province)).forEach(new Consumer<MountainHut>() {
+					public void accept(MountainHut hut) {
+						
+						Long numInMunicipality = Long.valueOf(0);
+						
+						if(insideMap.containsKey(hut.getMunicipality().getName()))
+							numInMunicipality = insideMap.get(hut.getMunicipality().getName());
+						
+						numInMunicipality = numInMunicipality + 1;
+						insideMap.put(hut.getMunicipality().getName(), numInMunicipality);
+					}
+				});
+				
+				retValue.put(province, insideMap);
+			}
+		});
+		
+		return retValue;
 	}
 
 	/**
@@ -293,6 +334,24 @@ public class Region {
 	 *         as value
 	 */
 	public Map<String, Long> countMountainHutsPerAltitudeRange() {
+		
+		Map<String, Long> retValue = new HashMap<>(this.huts.size()/2);		
+		Stream<Integer> altitudes = this.huts.stream().map(new Function<MountainHut, Integer>(){
+			public Integer apply(MountainHut tmp) {				
+				if(tmp.getAltitude().isPresent())
+					return tmp.getAltitude().get();
+				else
+					return tmp.getMunicipality().getAltitude();
+			}
+		});
+		
+		altitudes.map(a -> this.getAltitudeRange(a)).distinct().forEach(new Consumer<String>() {
+			public void accept(String range) {
+				
+				
+			}
+		});
+		
 		return null;
 	}
 
