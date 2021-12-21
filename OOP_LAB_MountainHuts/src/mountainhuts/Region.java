@@ -449,12 +449,46 @@ public class Region {
 	public Map<Long, List<String>> municipalityNamesPerCountOfMountainHuts() {
 		
 		Map<Long, List<String>> retValue = new HashMap<>(this.huts.size()/2);
-		Long numOfHuts = Long.valueOf(this.huts.size());
-		List<String> municipalityNames = new LinkedList<>();
+		Map<String, Long> countHutsPerMunicipality = new HashMap<>(this.municipalities.size());
 		
-		this.municipalities.stream().map(m -> m.getName()).sorted().limit(numOfHuts).forEach(s -> municipalityNames.add(s));
-		retValue.put(numOfHuts, municipalityNames);
+		/**
+		 * Creating a temporary map using the municipality's name as key and 
+		 * the number of huts as value.
+		 */
+		this.huts.stream().map(h -> h.getMunicipality()).forEach(new Consumer<Municipality>() {
+			public void accept(Municipality m) {
+				
+				Long counter = null;
+				
+				if(countHutsPerMunicipality.containsKey(m.getName()))
+					counter = countHutsPerMunicipality.get(m.getName());
+				else
+					counter = Long.valueOf(0);
+				
+				countHutsPerMunicipality.put(m.getName(), counter+1);
+			}
+		});
 		
+		/**
+		 * After populating the temporary map, it will be reversed to populate the output map.
+		 * The forEach loop will add the name of the municipality in a list of strings whenever the counter match a key already inserted. 
+		 */
+		countHutsPerMunicipality.keySet().stream().sorted().forEach(new Consumer<String>() {
+			public void accept(String s) {
+				
+				List<String> munNames;
+				Long counter = countHutsPerMunicipality.get(s);
+				
+				if(retValue.containsKey(counter))
+					munNames = retValue.get(counter);
+				else
+					munNames = new LinkedList<>();
+				
+				munNames.add(s);
+				retValue.put(counter, munNames);				
+			}
+		});;
+				
 		return retValue;
 	}
 

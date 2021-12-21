@@ -53,7 +53,6 @@ public class ExampleTest {
 				res5.get("0-1000").get());
 
 		Map<Long, List<String>> res6 = r.municipalityNamesPerCountOfMountainHuts();
-		System.out.println(res6);
 		assertNotNull("Missing set of municipality names per count of mountain huts", res6);
 		assertEquals("Wrong number of municipalities per count 1", 61, res6.get(1L).size());
 
