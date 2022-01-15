@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.function.Consumer;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
@@ -356,10 +359,8 @@ public class Vaccines {
 			tmpList = new LinkedList<>();
 			
 			for(int i = 9; i < (hoursPerDay+9); i++) {
-				for(int l = 15; l <= 60; l = l +15) {
-					tmpList.add(String.format("%tH", (long) i) + ":" + String.valueOf(l));
-					System.out.println(i);
-					System.out.println(String.format("%tH", ((long) i)) + ":" + String.valueOf(l));
+				for(int l = 0; l < 60; l = l +15) {
+					tmpList.add(String.format("%02d", (long) i) + ":" + String.format("%02d", (long) l));
 				}
 			}		
 			retValue.add(tmpList);
@@ -377,7 +378,19 @@ public class Vaccines {
 	 * @return
 	 */
 	public int getDailyAvailable(String hubName, int day){
-		return -1;
+		
+		long hourlyEstimate;
+		int retValue;
+		
+		try {
+			hourlyEstimate = estimateHourlyCapacity(hubName);
+			retValue = (int) (hourlyEstimate * this.hours[day]);
+		}
+		catch(VaccineException ve) {
+			retValue = -1;
+		}
+		
+		return retValue;
 	}
 
 	/**
@@ -392,7 +405,25 @@ public class Vaccines {
 	 * @return
 	 */
 	public Map<String,List<Integer>> getAvailable(){
-		return null;
+		
+		Map<String, List<Integer>> retValue = null;
+		Collection<String> hubsName = getHubs();
+		List<Integer> weekCapacity = null;
+		String hubName;
+		
+		retValue = new HashMap(hubsName.size()/2);
+		for(Iterator<String> i = hubsName.iterator(); i.hasNext(); ) {
+			
+			weekCapacity = new LinkedList<>();
+			hubName = i.next();
+			// Loop over the days of the week
+			for(int l = 0; l < 7; l++) 
+				weekCapacity.add(getDailyAvailable(hubName, l));
+			
+			retValue.put(hubName, weekCapacity);			
+		}
+		
+		return retValue;
 	}
 	
 	/**
@@ -412,7 +443,50 @@ public class Vaccines {
 	 * @return the list of daily allocations
 	 */
 	public List<String> allocate(String hubName, int day){
-		return null;
+		
+		int dailyCapacity = getDailyAvailable(hubName, day);
+		int remainingCapacity;
+		int capacityPerAge;
+		Collection<String> ageIntervals = getAgeIntervals().stream().sorted(Collections.reverseOrder()).toList(); 
+		String ageInterval = null;
+		Collection<String> peopleInAgeInterval = null;
+		Collection<String> peopleToAdd = new LinkedList<>();
+		List<String> retValue = new LinkedList<>();
+		
+		remainingCapacity = dailyCapacity;
+		
+		while(remainingCapacity != 0) {
+			for(Iterator<String> i = ageIntervals.iterator(); i.hasNext(); ) {
+				
+				ageInterval = i.next();
+				peopleInAgeInterval = getInInterval(ageInterval);
+				capacityPerAge = (int) (remainingCapacity * 0.4);
+				
+				if((remainingCapacity - capacityPerAge) < 0)
+					capacityPerAge = remainingCapacity;
+			
+				for(Iterator<String> l = peopleInAgeInterval.iterator(); l.hasNext(); ) {
+					
+					String SSN = l.next();
+					Person pers = this.people.stream().filter(p -> p.getSSN().equals(SSN)).findFirst().get();
+					if(!(pers.isAssigned())) {
+						pers.assignForVaccination();
+						peopleToAdd.add(pers.getSSN());
+					}
+					
+				}
+				
+				peopleToAdd = peopleToAdd.stream().limit(capacityPerAge).toList();
+				retValue.addAll(peopleToAdd);
+				
+				remainingCapacity = remainingCapacity - peopleToAdd.size();
+				if(remainingCapacity == 0)
+					break;
+				
+			}
+		}
+		
+		return retValue;
 	}
 	
 	/**

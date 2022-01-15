@@ -13,6 +13,7 @@ public class Person {
 	private String surname;
 	private String SSN;
 	private int birthYear;
+	private Boolean assigned; // Is this person assigned for the vaccination?
 	
 	/**
 	 * Constructor of the Person class
@@ -27,6 +28,14 @@ public class Person {
 		this.surname = surname;
 		this.SSN = SSN;
 		this.birthYear = birthYear;
+		this.assigned = false;
+	}
+	
+	/**
+	 * Set the flag 'assigned' to true to indicate that a person has been assigned for the vaccination
+	 */
+	public void assignForVaccination() {
+		this.assigned = true;
 	}
 
 	/**
@@ -55,6 +64,13 @@ public class Person {
 	 */
 	public int getBirthYear() {
 		return this.birthYear;
+	}
+	
+	/**
+	 * Getter method used to determine if a person has been assigned for the vaccination
+	 */
+	public Boolean isAssigned() {
+		return this.assigned;
 	}
 	
 }
