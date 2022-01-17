@@ -6,12 +6,15 @@ import java.io.Reader;
 import java.util.function.Consumer;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Collectors.*;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.function.BiConsumer;
 
 public class Vaccines {
@@ -91,6 +94,22 @@ public class Vaccines {
 		}
 		
 		return retValue;
+	}
+	
+	/**
+	 * Private method used to write less code since this operation is used by a large number of method
+	 * Given an SSN, it finds the Person object which it represents
+	 * 
+	 * @param SSN: unique identifier for a person
+	 * @return pers: Person associated with the SSN
+	 */
+	private Optional<Person> getPersonObj(String ssn) {
+		
+		Optional<Person> pers = null;
+		
+		// If there is a match, it's sure to be the one searched because the SSN is a unique identifier
+		pers = this.people.stream().filter(p -> ssn.equals(p.getSSN())).findAny();		
+		return pers;
 	}
 	
 	
@@ -445,45 +464,60 @@ public class Vaccines {
 	public List<String> allocate(String hubName, int day){
 		
 		int dailyCapacity = getDailyAvailable(hubName, day);
-		int remainingCapacity;
-		int capacityPerAge;
+		long capacityPerAge;
+		
+		/**
+		 *  If every age interval has been selected at least once to assign people to the vaccination hub
+		 *  i need to know that, if i have to restart cycling through the intervals, i need to pick the n person remaining
+		 *  and not n*0.4
+		 */		
+		Boolean oneRoundPerAgeComplete = false;
+		
 		Collection<String> ageIntervals = getAgeIntervals().stream().sorted(Collections.reverseOrder()).toList(); 
 		String ageInterval = null;
 		Collection<String> peopleInAgeInterval = null;
-		Collection<String> peopleToAdd = new LinkedList<>();
+		
+		Collection<Person> peopleToAdd = null;
+		Collection<String> ssnToAdd = null;
 		List<String> retValue = new LinkedList<>();
 		
-		remainingCapacity = dailyCapacity;
-		
-		while(remainingCapacity != 0) {
+		while(dailyCapacity != 0) {
 			for(Iterator<String> i = ageIntervals.iterator(); i.hasNext(); ) {
 				
 				ageInterval = i.next();
 				peopleInAgeInterval = getInInterval(ageInterval);
-				capacityPerAge = (int) (remainingCapacity * 0.4);
+				peopleToAdd = new LinkedList<>();
 				
-				if((remainingCapacity - capacityPerAge) < 0)
-					capacityPerAge = remainingCapacity;
-			
+				if(!oneRoundPerAgeComplete)
+					capacityPerAge =  (int) (dailyCapacity*0.4); 
+				else
+					capacityPerAge = dailyCapacity;
+				
 				for(Iterator<String> l = peopleInAgeInterval.iterator(); l.hasNext(); ) {
 					
 					String SSN = l.next();
-					Person pers = this.people.stream().filter(p -> p.getSSN().equals(SSN)).findFirst().get();
-					if(!(pers.isAssigned())) {
-						pers.assignForVaccination();
-						peopleToAdd.add(pers.getSSN());
-					}
+					Person pers = getPersonObj(SSN).get();
+					
+					if(!(pers.isAssigned())) 
+						peopleToAdd.add(pers);
+					
 					
 				}
 				
+				// Limit the number of people to match the vaccination hub capacity
 				peopleToAdd = peopleToAdd.stream().limit(capacityPerAge).toList();
-				retValue.addAll(peopleToAdd);
-				
-				remainingCapacity = remainingCapacity - peopleToAdd.size();
-				if(remainingCapacity == 0)
+				// Assign each of these to the vaccination hub
+				peopleToAdd.stream().forEach(p -> p.assignForVaccination(hubName, day));
+				// Get every person SSN to put into the list
+				ssnToAdd = peopleToAdd.stream().map(p -> p.getSSN()).toList();
+				retValue.addAll(ssnToAdd);		
+								
+				dailyCapacity = dailyCapacity - ssnToAdd.size();
+				if(dailyCapacity == 0)
 					break;
 				
 			}
+			oneRoundPerAgeComplete = true;
 		}
 		
 		return retValue;
@@ -495,6 +529,7 @@ public class Vaccines {
 	 * 
 	 */
 	public void clearAllocation() {
+		this.people.stream().filter(p -> p.isAssigned()).forEach(p -> p.freeFromVaccination());
 	}
 	
 	/**
@@ -516,6 +551,15 @@ public class Vaccines {
 	 * @return the list of daily allocations
 	 */
 	public List<Map<String,List<String>>> weekAllocate(){
+		
+		List<Map<String,List<String>>> retValue = new LinkedList<>();
+		Stream<Person> assignedPeople = this.people.stream().filter(p -> p.isAssigned()); 
+		
+		for(int i = 0; i < 7; i++) {
+			//assignedPeople.collect(new Map<String, List<String>>, );
+			
+		}
+		
 		return null;
 	}
 	
